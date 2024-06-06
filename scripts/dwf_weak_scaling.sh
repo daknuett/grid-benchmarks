@@ -12,11 +12,17 @@ fi
 if [ "$CLUSTER" = "booster" ] ; then
   GPU=1
 fi
+if [ "$CLUSTER" = "LumiG" ] ; then
+  GPU=1
+fi
 STATIC="--decomposition --shm 4096 -Ls 16"
 if [ $GPU -eq 0 ] ; then
   STATIC="$STATIC --dslash-asm"
 else
   STATIC="$STATIC --accelerator-threads 8"
+fi
+if [ "$CLUSTER" = "LumiG" ] ; then
+  STATIC="$STATIC --shm-mpi 1"
 fi
 
 # Main function running the binary, here
@@ -51,6 +57,13 @@ RUN () {
              fi
              M=$N
              ;;
+    LumiG)
+             #M=$(( M / 8 ))
+             #if [ $M -eq 0 ] ; then M=1 ; fi
+
+	     CPU_BIND="map_cpu:49,57,17,25,1,9,33,41"
+	     PREFIX="srun -N $M -n $N --cpu-bind=${CPU_BIND} ./select_gpu"
+	     ;;
     *)       PREFIX="srun -N $M -n $N" ;;
   esac
 

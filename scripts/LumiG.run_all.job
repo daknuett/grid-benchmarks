@@ -1,0 +1,32 @@
+#!/bin/bash
+
+#SBATCH --nodes=32
+#SBATCH --ntasks-per-node=8
+#SBATCH --gpus-per-node=8
+#SBATCH --account=project_465000822 
+#SBATCH --partition=standard-g
+#SBATCH --time=04:00:00
+#SBATCH -J Benchmark_all
+
+source ../source.sh
+
+echo "run_all.job [1] ..."
+
+cat << EOF > select_gpu
+#!/bin/bash
+
+export ROCR_VISIBLE_DEVICES=\$SLURM_LOCALID
+exec \$*
+EOF
+echo "run_all.job [2] ..."
+
+chmod +x ./select_gpu
+echo "run_all.job [3] ..."
+
+CPU_BIND="map_cpu:49,57,17,25,1,9,33,41"
+
+export MPICH_GPU_SUPPORT_ENABLED=1
+
+echo "run_all.job [4] ..."
+./run_all.sh LumiG
+rm -rf ./select_gpu

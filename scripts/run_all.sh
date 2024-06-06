@@ -9,8 +9,11 @@ if [ $# -lt 1 ] ; then
   echo "alex             Alex GPU Cluster @ RRZE/FAU@NHR"
   echo "qpace4           QPACE4 @ UR"
   echo "booster          JUWELS Booster @ JSC"
+  echo "LumiG            Lumi-G @ CSC"
   exit 1
 fi
+
+echo "run_all.sh alive ..."
 
 MULTI=1
 CLUSTER=$1
@@ -19,12 +22,15 @@ case $CLUSTER in
   qpace4)  MULTI=4 ; export OMP_NUM_THREADS=12 ;;
   booster) MULTI=1 ;;
   alex)    MULTI=1 ; export OMP_NUM_THREADS=16 ;;
+  LumiG)   MULTI=8 ;;
   *)       echo "Must name a cluster" ; exit 1 ;;
 esac
 
 CC="--comms-concurrent"
 CS="--comms-sequential"
 CO="--comms-overlap"
+
+echo "run_all.sh running ..."
 
 BINARY="Benchmark_wilson"
 OUT="${CLUSTER}.wilson_strong_scaling.dp.txt"

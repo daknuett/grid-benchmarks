@@ -12,11 +12,17 @@ fi
 if [ "$CLUSTER" = "booster" ] ; then
   GPU=1
 fi
+if [ "$CLUSTER" = "LumiG" ] ; then
+  GPU=1
+fi
 STATIC="--decomposition --shm 4096 -Ls 16"
 if [ $GPU -eq 0 ] ; then
   STATIC="$STATIC --dslash-asm"
 else
   STATIC="$STATIC --accelerator-threads 8"
+fi
+if [ "$CLUSTER" = "LumiG" ] ; then
+  STATIC="$STATIC --shm-mpi 1"
 fi
 
 # Main function running the binary, here
@@ -51,11 +57,19 @@ RUN () {
              fi
              M=$N
              ;;
+    LumiG)
+             #M=$(( M / 8 ))
+             #if [ $M -eq 0 ] ; then M=1 ; fi
+	
+	     CPU_BIND="map_cpu:49,57,17,25,1,9,33,41"
+	     PREFIX="srun -N $M -n $N --cpu-bind=${CPU_BIND} ./select_gpu"
+	     ;;
     *)       PREFIX="srun -N $M -n $N" ;;
   esac
 
   #OUT=": mflop/s = xxxxxxx"
   OUT=`$PREFIX ./$BINARY $STATIC --grid $GRID --mpi $MPI $COMMS | grep ": mflop/s ="`
+  #echo "$PREFIX ./$BINARY $STATIC --grid $GRID --mpi $MPI $COMMS"
   echo "$PRECISION  $GRID  $M  $MPI  $COMMS  $OUT"
 }
 
@@ -80,6 +94,26 @@ for MPI in $MPILIST ; do
 done
 
 M=8
+N=$(( M * MULTI ))
+GRID=64.32.32.32
+MPILIST=$( python3 generate-mpilist.py $N $GRID )
+#MPILIST="16.2.1.1  8.4.1.1  8.2.2.1  4.4.2.1  4.2.2.2"
+
+for MPI in $MPILIST ; do
+  RUN "$M" "$N" "$GRID" "$MPI"
+done
+
+M=4
+N=$(( M * MULTI ))
+GRID=64.32.32.32
+MPILIST=$( python3 generate-mpilist.py $N $GRID )
+#MPILIST="16.2.1.1  8.4.1.1  8.2.2.1  4.4.2.1  4.2.2.2"
+
+for MPI in $MPILIST ; do
+  RUN "$M" "$N" "$GRID" "$MPI"
+done
+
+M=2
 N=$(( M * MULTI ))
 GRID=64.32.32.32
 MPILIST=$( python3 generate-mpilist.py $N $GRID )

@@ -117,7 +117,6 @@ LIBS="-lrt -lmpi"
 
 --- 
 
-**Update 08.05.2024**
 
 `source.sh`:
 ```sh
@@ -156,56 +155,6 @@ export PATH=~/Python-3.11.1/build/bin:$PATH
 
 
 
-```
-
-
-
----
-**Update 06.05.2024**
-
-I try to use `systems/Lumi`.
-
-`export SPACK_USER_PREFIX=/project/project_465000822/spack`
-`module load spack/23.03-2`
-`module load openssl-1.1.1l-gcc-7.5.0-v4rhtc4`
-
-`sourceme.sh` should be:
-```sh
-export PATH=$PATH:$SPACK_ROOT/bin
-source $SPACK_ROOT/share/spack/setup-env.sh
-module load CrayEnv LUMI/22.12 partition/G  cray-fftw/3.3.10.1 rocm
-spack load c-lime
-spack load gmp
-spack load mpfr
-```
-
-
-
----
-
-Modules/environment: none
-
-`CONFIGURATION`
-```
---enable-comms=mpi-auto --enable-unified=no --enable-shm=nvlink \
---enable-accelerator=hip --enable-gen-simd-width=64 --enable-simd=GPU \
---enable-fermion-reps=no --enable-gparity=no --without-lime --without-hdf5 \
-CXX=hipcc MPICXX=mpicxx CXXFLAGS="-fPIC --amdgpu-target=gfx90a -I/opt/rocm/include/ \
--std=c++14 -I/opt/cray/pe/mpich/8.1.17/ofi/gnu/9.1/include" \
-LDFLAGS="-L/opt/cray/pe/mpich/8.1.17/ofi/gnu/9.1/lib -lmpi \
--L/opt/cray/pe/mpich/8.1.17/gtl/lib -lmpi_gtl_hsa -lamdhip64 -fopenmp"
-```
-
-**UPDATE**
-
-```
---enable-comms=mpi-auto --enable-unified=no --enable-shm=nvlink \
---enable-accelerator=hip --enable-gen-simd-width=64 --enable-simd=GPU \
---enable-fermion-reps=no --enable-gparity=no --without-lime --without-hdf5 \
-CXX=hipcc MPICXX=mpicxx CXXFLAGS="-fPIC --amdgpu-target=gfx90a -I/opt/rocm/include/ \
--std=c++17 -I/opt/cray/pe/mpich/8.1.23/ofi/gnu/9.1/include" \
-LDFLAGS="-L/opt/cray/pe/mpich/8.1.23/ofi/gnu/9.1/lib -lmpi \
--L/opt/cray/pe/mpich/8.1.23/gtl/lib -lmpi_gtl_hsa -lamdhip64 -fopenmp"
 ```
 
 

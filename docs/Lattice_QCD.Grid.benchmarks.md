@@ -11,6 +11,8 @@ HPC clusters, including
 - [Fritz](https://hpc.fau.de/systems-services/documentation-instructions/clusters/fritz-cluster/) (Intel Ice Lake CPU cluster) at Regional Computer Center Erlangen (RRZE)
 - [JUWELS Booster](https://apps.fz-juelich.de/jsc/hps/juwels/booster-overview.html) (NVIDIA A100 GPU cluster) at Jülich Supercomputing Centre (JSC)
 
+- [Lumi-G](https://docs.lumi-supercomputer.eu/hardware/lumig/) (AMD MI250x GPU cluster) at  CSC data center in Kajaani, Finland
+
 ## Grid
 
 The Grid lattice QCD framework comes with a series of tests and benchmarks.
